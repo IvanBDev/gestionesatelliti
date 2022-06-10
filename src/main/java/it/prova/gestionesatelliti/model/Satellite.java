@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "satellite")
@@ -28,17 +27,14 @@ public class Satellite {
 	
 	@NotBlank(message = "{codice.notblank}")
 	@Column(name = "codice")
-	private String codeice;
+	private String codice;
 	
-	@NotBlank(message = "{dataLancio.notblank}")
 	@Column(name = "dataLancio")
-	private Date datalancio;
-	
-	@NotBlank(message = "{dataRientro.notblank}")
+	private Date dataLancio;
+
 	@Column(name = "dataRientro")
 	private Date dataRientro;
 	
-	@NotNull(message = "{stato.notblank}")
 	@Column(name = "stato")
 	@Enumerated(EnumType.STRING)
 	private StatoSatellite stato;
@@ -59,20 +55,20 @@ public class Satellite {
 		this.denominazione = denominazione;
 	}
 
-	public String getCodeice() {
-		return codeice;
+	public String getCodice() {
+		return codice;
 	}
 
-	public void setCodeice(String codeice) {
-		this.codeice = codeice;
+	public void setCodice(String codeice) {
+		this.codice = codeice;
 	}
 
-	public Date getDatalancio() {
-		return datalancio;
+	public Date getDataLancio() {
+		return dataLancio;
 	}
 
-	public void setDatalancio(Date datalancio) {
-		this.datalancio = datalancio;
+	public void setDataLancio(Date datalancio) {
+		this.dataLancio = datalancio;
 	}
 
 	public Date getDataRientro() {
