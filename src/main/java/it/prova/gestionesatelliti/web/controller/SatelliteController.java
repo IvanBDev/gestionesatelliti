@@ -1,5 +1,6 @@
 package it.prova.gestionesatelliti.web.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import it.prova.gestionesatelliti.model.Satellite;
 import it.prova.gestionesatelliti.model.SatelliteCustomValidator;
+import it.prova.gestionesatelliti.model.StatoSatellite;
 import it.prova.gestionesatelliti.service.SatelliteService;
 
 @Controller
@@ -121,6 +123,26 @@ public class SatelliteController {
 		satelliteservice.aggiorna(satellite);
 
 		redirectAttrs.addFlashAttribute("successMessage", "Operazione eseguita correttamente");
+		return "redirect:/satellite";
+	}
+	
+	@GetMapping("/cambioDataPiuLancio/{idSatellite}")
+	public String cambioDataPiuLancio(@PathVariable(required = true) Long idSatellite, Model model, RedirectAttributes redirectAttrs) {
+		
+		Satellite satelliteDaLanciare = satelliteservice.caricaSingoloElemento(idSatellite);
+		if(satelliteDaLanciare.getDataLancio() == null) {
+			
+			satelliteDaLanciare.setDataLancio(new Date());
+			satelliteDaLanciare.setStato(StatoSatellite.IN_MOVIMENTO);
+			satelliteservice.aggiorna(satelliteDaLanciare);
+			
+		}
+		else {
+			
+			redirectAttrs.addFlashAttribute("errorMessage", "per lanciare il satellite bigogna che sia solo censito");
+			
+		}
+		
 		return "redirect:/satellite";
 	}
 
