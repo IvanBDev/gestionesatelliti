@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,13 +25,13 @@ import it.prova.gestionesatelliti.service.SatelliteService;
 @Controller
 @RequestMapping(value = "/satellite")
 public class SatelliteController {
-	
+
 	@Autowired
 	private SatelliteService satelliteservice;
-	
+
 	@Autowired
 	private SatelliteCustomValidator satelliteValidator;
-	
+
 	@GetMapping
 	public ModelAndView listAll() {
 		ModelAndView mv = new ModelAndView();
@@ -39,31 +40,31 @@ public class SatelliteController {
 		mv.setViewName("satellite/list");
 		return mv;
 	}
-	
+
 	@GetMapping("/search")
 	public String search() {
 		return "satellite/search";
 	}
-	
+
 	@PostMapping("/list")
 	public String listByExample(Satellite example, ModelMap model) {
 		List<Satellite> results = satelliteservice.findByExample(example);
 		model.addAttribute("satellite_list_attribute", results);
 		return "satellite/list";
 	}
-	
+
 	@GetMapping("/insert")
 	public String create(Model model) {
 		model.addAttribute("insert_satellite_attr", new Satellite());
 		return "satellite/insert";
 	}
-	
+
 	@PostMapping("/save")
 	public String save(@Valid @ModelAttribute("insert_satellite_attr") Satellite satellite, BindingResult result,
 			RedirectAttributes redirectAttrs) {
-		
+
 		satelliteValidator.validate(satellite, result);
-		
+
 		if (result.hasErrors())
 			return "satellite/insert";
 
@@ -72,11 +73,37 @@ public class SatelliteController {
 		redirectAttrs.addFlashAttribute("successMessage", "Operazione eseguita correttamente");
 		return "redirect:/satellite";
 	}
-	
+
 	@GetMapping("/show/{idSatellite}")
 	public String show(@PathVariable(required = true) Long idSatellite, Model model) {
 		model.addAttribute("show_satellite_attr", satelliteservice.caricaSingoloElemento(idSatellite));
 		return "satellite/show";
 	}
-	
+
+	@GetMapping("/delete/{idSatellite}")
+	public String delete(@PathVariable(required = true) Long idSatellite, Model model) {
+
+		model.addAttribute("remove_satellite_attr", satelliteservice.caricaSingoloElemento(idSatellite));
+
+		return "satellite/delete";
+	}
+
+	@GetMapping("/remove/{idSatellite}")
+	public String remove(@PathVariable(required = true) Long idSatellite, RedirectAttributes redirectAttrs) {
+		
+		if(satelliteValidator.validateRemove(satelliteservice.caricaSingoloElemento(idSatellite))) {
+			
+			satelliteservice.rimuoviPerId(idSatellite);
+			redirectAttrs.addFlashAttribute("successMessage", "Operazione eseguita correttamente");
+		}
+		else {
+			
+			redirectAttrs.addFlashAttribute("errorMessage", "per eliminare il satellite bigogna che sia disattivato e atterrato oppure solo censito");
+			
+		}
+		
+		return "redirect:/satellite";
+
+	}
+
 }

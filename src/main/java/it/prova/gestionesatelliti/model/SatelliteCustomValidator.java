@@ -25,11 +25,11 @@ public class SatelliteCustomValidator implements Validator {
 					"La data di lancio del satellite deve essere antecedente alla data di rientro dello stesso");
 
 		}
-		
-		if(satellite.getDataRientro() != null && satellite.getDataLancio() == null) {
-			
+
+		if (satellite.getDataRientro() != null && satellite.getDataLancio() == null) {
+
 			errors.rejectValue("dataLancio", null, "Bisogna inserire la data di lancio");
-			
+
 		}
 
 		if ((satellite.getStato() == StatoSatellite.FISSO || satellite.getStato() == StatoSatellite.IN_MOVIMENTO)
@@ -41,9 +41,24 @@ public class SatelliteCustomValidator implements Validator {
 
 		if (satellite.getStato() == StatoSatellite.DISATTIVATO && satellite.getDataRientro() == null) {
 
-			errors.rejectValue("stato", null, "La data di rientro del satellite deve essere inserita se lo si disattiva");
+			errors.rejectValue("stato", null,
+					"La data di rientro del satellite deve essere inserita se lo si disattiva");
 
 		}
+
+	}
+
+	public boolean validateRemove(Object target) {
+
+		Satellite satellite = (Satellite) target;
+
+		if (satellite.getDataRientro() != null && satellite.getStato() == StatoSatellite.DISATTIVATO)
+			return true;
+		
+		if(satellite.getDataLancio() == null && satellite.getDataRientro() == null && satellite.getStato() == null)
+			return true;
+		
+		return false;
 
 	}
 
