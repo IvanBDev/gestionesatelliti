@@ -1,5 +1,7 @@
 package it.prova.gestionesatelliti.web.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -91,28 +93,28 @@ public class SatelliteController {
 
 	@GetMapping("/remove/{idSatellite}")
 	public String remove(@PathVariable(required = true) Long idSatellite, RedirectAttributes redirectAttrs) {
-		
-		if(satelliteValidator.validateRemove(satelliteservice.caricaSingoloElemento(idSatellite))) {
-			
+
+		if (satelliteValidator.validateRemove(satelliteservice.caricaSingoloElemento(idSatellite))) {
+
 			satelliteservice.rimuoviPerId(idSatellite);
 			redirectAttrs.addFlashAttribute("successMessage", "Operazione eseguita correttamente");
+		} else {
+
+			redirectAttrs.addFlashAttribute("errorMessage",
+					"per eliminare il satellite bigogna che sia disattivato e atterrato oppure solo censito");
+
 		}
-		else {
-			
-			redirectAttrs.addFlashAttribute("errorMessage", "per eliminare il satellite bigogna che sia disattivato e atterrato oppure solo censito");
-			
-		}
-		
+
 		return "redirect:/satellite";
 
 	}
-	
+
 	@GetMapping("/edit/{idSatellite}")
 	public String edit(@PathVariable(required = true) Long idSatellite, Model model) {
 		model.addAttribute("edit_satellite_attr", satelliteservice.caricaSingoloElemento(idSatellite));
 		return "satellite/edit";
 	}
-	
+
 	@PostMapping("/update")
 	public String update(@Valid @ModelAttribute("edit_satellite_attr") Satellite satellite, BindingResult result,
 			RedirectAttributes redirectAttrs) {
@@ -125,45 +127,59 @@ public class SatelliteController {
 		redirectAttrs.addFlashAttribute("successMessage", "Operazione eseguita correttamente");
 		return "redirect:/satellite";
 	}
-	
+
 	@GetMapping("/cambioDataPiuLancio/{idSatellite}")
-	public String cambioDataPiuLancio(@PathVariable(required = true) Long idSatellite, Model model, RedirectAttributes redirectAttrs) {
-		
+	public String cambioDataPiuLancio(@PathVariable(required = true) Long idSatellite, Model model,
+			RedirectAttributes redirectAttrs) {
+
 		Satellite satelliteDaLanciare = satelliteservice.caricaSingoloElemento(idSatellite);
-		if(satelliteDaLanciare.getDataLancio() == null) {
-			
+		if (satelliteDaLanciare.getDataLancio() == null) {
+
 			satelliteDaLanciare.setDataLancio(new Date());
 			satelliteDaLanciare.setStato(StatoSatellite.IN_MOVIMENTO);
 			satelliteservice.aggiorna(satelliteDaLanciare);
-			
-		}
-		else {
-			
+
+		} else {
+
 			redirectAttrs.addFlashAttribute("errorMessage", "per lanciare il satellite bigogna che sia solo censito");
-			
+
 		}
-		
+
 		return "redirect:/satellite";
 	}
-	
+
 	@GetMapping("/rientroPiuDisattivamento/{idSatellite}")
-	public String rientroPiuDisattivamento(@PathVariable(required = true) Long idSatellite, Model model, RedirectAttributes redirectAttrs) {
-		
+	public String rientroPiuDisattivamento(@PathVariable(required = true) Long idSatellite, Model model,
+			RedirectAttributes redirectAttrs) {
+
 		Satellite satelliteDaDisattivare = satelliteservice.caricaSingoloElemento(idSatellite);
-		if(satelliteDaDisattivare.getDataRientro() == null) {
-			
+		if (satelliteDaDisattivare.getDataRientro() == null) {
+
 			satelliteDaDisattivare.setDataRientro(new Date());
 			satelliteDaDisattivare.setStato(StatoSatellite.DISATTIVATO);
 			satelliteservice.aggiorna(satelliteDaDisattivare);
-			
-		}
-		else {
-			
+
+		} else {
+
 			redirectAttrs.addFlashAttribute("errorMessage", "per ritirare il satellite bigogna che sia in orbita");
-			
+
 		}
-		
+
 		return "redirect:/satellite";
+	}
+
+	@GetMapping("/searchPiuDiDueAnniInOrbita")
+	public ModelAndView searchPiuDiDueAnniInOrbita(RedirectAttributes redirectAttrs) {
+
+		ModelAndView mv = new ModelAndView();
+
+		List<Satellite> results = satelliteservice.satellitiLanciatiDaPiuDi2Anni();
+		
+		mv.addObject("satellite_list_attribute", results);
+		mv.setViewName("satellite/list");
+		
+		return mv;
+
 	}
 
 }

@@ -1,6 +1,8 @@
 package it.prova.gestionesatelliti.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.prova.gestionesatelliti.model.Satellite;
+import it.prova.gestionesatelliti.model.StatoSatellite;
 import it.prova.gestionesatelliti.repository.SatelliteRepository;
 
 @Service
@@ -88,6 +91,32 @@ public class SatelliteServiceImpl implements SatelliteService {
 
 		return repository.findAll(specificationCriteria);
 
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Satellite> satellitiLanciatiDaPiuDi2Anni() {
+		// TODO Auto-generated method stub
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, -2);
+		Date date = calendar.getTime();
+		
+		return repository.findAllByDataLancioBeforeAndStatoNot(calendar.getTime(), StatoSatellite.DISATTIVATO);
+		
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Satellite> satellitiDisattivatiMaNonRientrati(StatoSatellite stato) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Satellite> satellitirimastiInOrbitaPiuDi10AnniEFissi(Date data, StatoSatellite stato) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

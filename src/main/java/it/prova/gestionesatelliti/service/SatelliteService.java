@@ -1,8 +1,10 @@
 package it.prova.gestionesatelliti.service;
 
+import java.util.Date;
 import java.util.List;
 
 import it.prova.gestionesatelliti.model.Satellite;
+import it.prova.gestionesatelliti.model.StatoSatellite;
 
 public interface SatelliteService {
 	
@@ -17,5 +19,11 @@ public interface SatelliteService {
 	public void rimuoviPerId(Long idInstance);
 	
 	public List<Satellite> findByExample(Satellite example);
+	
+	public List<Satellite> satellitiLanciatiDaPiuDi2Anni();
+	
+	public List<Satellite> satellitiDisattivatiMaNonRientrati(StatoSatellite stato);
+	
+	public List<Satellite> satellitirimastiInOrbitaPiuDi10AnniEFissi(Date data, StatoSatellite stato);
 	
 }
