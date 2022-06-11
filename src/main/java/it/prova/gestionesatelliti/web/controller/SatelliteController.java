@@ -1,7 +1,5 @@
 package it.prova.gestionesatelliti.web.controller;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -174,6 +172,34 @@ public class SatelliteController {
 		ModelAndView mv = new ModelAndView();
 
 		List<Satellite> results = satelliteservice.satellitiLanciatiDaPiuDi2Anni();
+		
+		mv.addObject("satellite_list_attribute", results);
+		mv.setViewName("satellite/list");
+		
+		return mv;
+
+	}
+	
+	@GetMapping("/disattivatiMaNonRientrati")
+	public ModelAndView disattivatiMaNonRientrati(RedirectAttributes redirectAttrs) {
+
+		ModelAndView mv = new ModelAndView();
+
+		List<Satellite> results = satelliteservice.satellitiDisattivatiMaNonRientrati();
+		
+		mv.addObject("satellite_list_attribute", results);
+		mv.setViewName("satellite/list");
+		
+		return mv;
+
+	}
+	
+	@GetMapping("/inOrbitaDaPiuDiDieciAnni")
+	public ModelAndView inOrbitaDaPiuDiDieciAnni(RedirectAttributes redirectAttrs) {
+
+		ModelAndView mv = new ModelAndView();
+
+		List<Satellite> results = satelliteservice.satellitirimastiInOrbitaPiuDi10AnniEFissi();
 		
 		mv.addObject("satellite_list_attribute", results);
 		mv.setViewName("satellite/list");

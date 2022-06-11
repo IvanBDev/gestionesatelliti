@@ -2,7 +2,6 @@ package it.prova.gestionesatelliti.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.Predicate;
@@ -99,7 +98,6 @@ public class SatelliteServiceImpl implements SatelliteService {
 		// TODO Auto-generated method stub
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.YEAR, -2);
-		Date date = calendar.getTime();
 		
 		return repository.findAllByDataLancioBeforeAndStatoNot(calendar.getTime(), StatoSatellite.DISATTIVATO);
 		
@@ -107,16 +105,19 @@ public class SatelliteServiceImpl implements SatelliteService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Satellite> satellitiDisattivatiMaNonRientrati(StatoSatellite stato) {
+	public List<Satellite> satellitiDisattivatiMaNonRientrati() {
 		// TODO Auto-generated method stub
-		return null;
+		return repository.findAllByDataRientroIsNullAndStato(StatoSatellite.DISATTIVATO);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Satellite> satellitirimastiInOrbitaPiuDi10AnniEFissi(Date data, StatoSatellite stato) {
+	public List<Satellite> satellitirimastiInOrbitaPiuDi10AnniEFissi() {
 		// TODO Auto-generated method stub
-		return null;
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, -10);
+		
+		return repository.findAllByDataLancioBeforeAndStato(calendar.getTime(), StatoSatellite.FISSO);
 	}
 
 }
