@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import it.prova.gestionesatelliti.model.Satellite;
+import it.prova.gestionesatelliti.model.SatelliteCustomValidator;
 import it.prova.gestionesatelliti.service.SatelliteService;
 
 @Controller
@@ -26,6 +27,9 @@ public class SatelliteController {
 	@Autowired
 	private SatelliteService satelliteservice;
 	
+	@Autowired
+	private SatelliteCustomValidator satelliteValidator;
+	
 	@GetMapping
 	public ModelAndView listAll() {
 		ModelAndView mv = new ModelAndView();
@@ -33,6 +37,11 @@ public class SatelliteController {
 		mv.addObject("satellite_list_attribute", results);
 		mv.setViewName("satellite/list");
 		return mv;
+	}
+	
+	@GetMapping("/search")
+	public String search() {
+		return "satellite/search";
 	}
 	
 	@PostMapping("/list")
@@ -51,11 +60,11 @@ public class SatelliteController {
 	@PostMapping("/save")
 	public String save(@Valid @ModelAttribute("insert_satellite_attr") Satellite satellite, BindingResult result,
 			RedirectAttributes redirectAttrs) {
-
+		
+		satelliteValidator.validate(satellite, result);
+		
 		if (result.hasErrors())
 			return "satellite/insert";
-		
-		if(satellite.getDataLancio().after(satellite.getDataRientro()))
 
 		satelliteservice.inserisciNuovo(satellite);
 
