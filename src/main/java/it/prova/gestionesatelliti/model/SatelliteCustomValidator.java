@@ -39,13 +39,6 @@ public class SatelliteCustomValidator implements Validator {
 
 		}
 
-		if (satellite.getStato() == StatoSatellite.DISATTIVATO && satellite.getDataRientro() == null) {
-
-			errors.rejectValue("stato", null,
-					"La data di rientro del satellite deve essere inserita se lo si disattiva");
-
-		}
-
 	}
 
 	public boolean validateRemove(Object target) {

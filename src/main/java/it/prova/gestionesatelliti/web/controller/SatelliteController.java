@@ -145,5 +145,25 @@ public class SatelliteController {
 		
 		return "redirect:/satellite";
 	}
+	
+	@GetMapping("/rientroPiuDisattivamento/{idSatellite}")
+	public String rientroPiuDisattivamento(@PathVariable(required = true) Long idSatellite, Model model, RedirectAttributes redirectAttrs) {
+		
+		Satellite satelliteDaDisattivare = satelliteservice.caricaSingoloElemento(idSatellite);
+		if(satelliteDaDisattivare.getDataRientro() == null) {
+			
+			satelliteDaDisattivare.setDataRientro(new Date());
+			satelliteDaDisattivare.setStato(StatoSatellite.DISATTIVATO);
+			satelliteservice.aggiorna(satelliteDaDisattivare);
+			
+		}
+		else {
+			
+			redirectAttrs.addFlashAttribute("errorMessage", "per ritirare il satellite bigogna che sia in orbita");
+			
+		}
+		
+		return "redirect:/satellite";
+	}
 
 }
